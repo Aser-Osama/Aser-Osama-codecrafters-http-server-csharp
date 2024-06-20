@@ -39,7 +39,9 @@ public class MainClass
         int r = socket.Receive(recBytes);
         string r_string = new string(Encoding.ASCII.GetChars(recBytes));
         var r_arr = r_string.Split('\n');
-        var endpoint = r_arr[0].Split(' ')[1].Split('/');
+        var endpoint_line = r_arr[0].Split(' ');
+        var endpoint = endpoint_line[1].Split('/');
+        var http_verb = endpoint_line[0];
 
         //Send response back to servers
         string responseStatus = "";
@@ -81,16 +83,34 @@ public class MainClass
                 }
                 break;
             case "files":
-                Console.WriteLine(fp + endpoint[2]);
-                if (string.IsNullOrEmpty(fp) || string.IsNullOrEmpty(endpoint[2]) || !File.Exists(fp + endpoint[2]))
+                if (http_verb.ToLower() == "get")
                 {
-                    responseStatus = "404 Not Found";
-                    break;
+
+                    Console.WriteLine(fp + endpoint[2]);
+                    if (string.IsNullOrEmpty(fp) || string.IsNullOrEmpty(endpoint[2]) || !File.Exists(fp + endpoint[2]))
+                    {
+                        responseStatus = "404 Not Found";
+                        break;
+                    }
+                    responseStatus = "200 OK";
+                    string fileContent = File.ReadAllText(fp + endpoint[2]);
+                    int contentLength2 = Encoding.UTF8.GetByteCount(fileContent);
+                    responseContent = $"\r\nContent-Type: application/octet-stream\r\nContent-Length: {contentLength2}\r\n\r\n{fileContent}";
                 }
-                responseStatus = "200 OK";
-                string fileContent = File.ReadAllText(fp + endpoint[2]);
-                int contentLength2 = Encoding.UTF8.GetByteCount(fileContent);
-                responseContent = $"\r\nContent-Type: application/octet-stream\r\nContent-Length: {contentLength2}\r\n\r\n{fileContent}";
+                else if (http_verb.ToLower() == "post")
+                {
+                    Console.WriteLine(fp + endpoint[2]);
+                    if (string.IsNullOrEmpty(fp) || string.IsNullOrEmpty(endpoint[2]))
+                    {
+                        responseStatus = "404 Not Found";
+                        break;
+                    }
+                    string filePath = fp + endpoint[2];
+                    var data = r_arr[r_arr.Length - 1].Trim('\0').Trim();
+                    Console.WriteLine(data.Length);
+                    File.WriteAllText(filePath, data);  // Create a file and write the content of writeText to it
+                    responseStatus = "201 Created";
+                }
                 break;
 
             default:
