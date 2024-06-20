@@ -44,14 +44,27 @@ else if (endpoint[1].ToLower() == "echo")
 else if (endpoint[1].ToLower() == "user-agent")
 {
     responseStatus = "200 OK";
+    // Assuming r_arr[3] contains the User-Agent line, you should first check it exists.
     if (r_arr.Length > 3 && r_arr[3].StartsWith("User-Agent:"))
     {
-        string agent = r_arr[3].Split(':')[1].Trim();
-        int contentLength = Encoding.UTF8.GetByteCount(agent);
-        string headers = "\r\nContent-Type: text/plain\r\nContent-Length: " + contentLength.ToString() + "\r\n\r\n";
-        responseContent = headers + agent;
+        string userAgentLine = r_arr[3];
+        string[] parts = userAgentLine.Split(':', 2);  // Split only into two parts: the key and the value.
+        if (parts.Length == 2)
+        {
+            string agent = parts[1].Trim();  // Now safely trimmed.
+            int contentLength = Encoding.UTF8.GetByteCount(agent);
+            responseContent = $"\r\nContent-Type: text/plain\r\nContent-Length: {contentLength}\r\n\r\n{agent}";
+        }
+        else
+        {
+            responseContent = "\r\nContent-Type: text/plain\r\nContent-Length: 0\r\n\r\n";
+        }
     }
-    else Console.WriteLine("what");
+    else
+    {
+        responseContent = "\r\nContent-Type: text/plain\r\nContent-Length: 0\r\n\r\n";
+    }
+
 }
 else
 {
