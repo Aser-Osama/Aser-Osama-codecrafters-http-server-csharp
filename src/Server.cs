@@ -44,13 +44,14 @@ else if (endpoint[1].ToLower() == "echo")
 else if (endpoint[1].ToLower() == "user-agent")
 {
     responseStatus = "200 OK";
-    if (r_arr.Length >= 4)
+    if (r_arr.Length > 3 && r_arr[3].StartsWith("User-Agent:"))
     {
         string agent = r_arr[3].Split(':')[1].Trim();
         int contentLength = Encoding.UTF8.GetByteCount(agent);
         string headers = "\r\nContent-Type: text/plain\r\nContent-Length: " + contentLength.ToString() + "\r\n\r\n";
         responseContent = headers + agent;
     }
+    else Console.WriteLine("what");
 }
 else
 {
