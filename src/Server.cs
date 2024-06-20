@@ -39,7 +39,6 @@ else if (endpoint[1].ToLower() == "echo")
 else if (endpoint[1].ToLower() == "user-agent")
 {
     responseStatus = "200 OK";
-    Console.WriteLine("Length = " + r_arr.Length);
     if (r_arr.Length > 3)
     {
         string userAgentLine = "";
@@ -50,16 +49,16 @@ else if (endpoint[1].ToLower() == "user-agent")
                 userAgentLine = line;
             }
         }
-        if (!string.IsNullOrEmpty(userAgentLine))
+        if (string.IsNullOrEmpty(userAgentLine))
         {
-            string[] parts = userAgentLine.Split(':');  // Split only into two parts: the key and the value.
-            string agent = parts[1].Trim();  // Now safely trimmed.
-            int contentLength = Encoding.UTF8.GetByteCount(agent);
-            responseContent = $"\r\nContent-Type: text/plain\r\nContent-Length: {contentLength}\r\n\r\n{agent}";
+            responseContent = "\r\nContent-Type: text/plain\r\nContent-Length: 0\r\n\r\n";
         }
         else
         {
-            responseContent = "\r\nContent-Type: text/plain\r\nContent-Length: 0\r\n\r\n";
+            string[] parts = userAgentLine.Split(':');
+            string agent = parts[1].Trim();
+            int contentLength = Encoding.UTF8.GetByteCount(agent);
+            responseContent = $"\r\nContent-Type: text/plain\r\nContent-Length: {contentLength}\r\n\r\n{agent}";
         }
 
     }
