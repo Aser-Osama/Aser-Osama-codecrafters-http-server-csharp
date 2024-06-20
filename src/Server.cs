@@ -22,7 +22,7 @@ int r = socket.Receive(recBytes);
 string r_string = new string(Encoding.ASCII.GetChars(recBytes));
 var r_arr = r_string.Split('\n');
 var endpoint = r_arr[0].Split(' ')[1].Split('/');
-// Console.WriteLine(r_string + "\n ------------");
+Console.WriteLine(r_string + "\n ------------");
 // foreach (var item in endpoint)
 // {
 //     Console.Write($"|{item}|");
