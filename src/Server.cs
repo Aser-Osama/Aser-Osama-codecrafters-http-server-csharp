@@ -17,7 +17,7 @@ Socket socket = server.AcceptSocket();
 
 
 //Receive request from server
-Byte[] recBytes = new Byte[512];
+Byte[] recBytes = new Byte[1024];
 int r = socket.Receive(recBytes);
 string r_string = new string(Encoding.ASCII.GetChars(recBytes));
 var r_arr = r_string.Split('\n');
@@ -46,10 +46,10 @@ else if (endpoint[1].ToLower() == "user-agent")
     responseStatus = "200 OK";
     if (r_arr.Length >= 4)
     {
-        //Console.WriteLine(r_arr[3]);
-        string agent = r_arr[3].Split(':')[1][1..];
-        //Console.WriteLine(agent);
-        responseContent = $"\r\nContent-Type: text/plain\r\nContent-Length: {agent.Length}\r\n\r\n{agent}";
+        string agent = r_arr[3].Split(':')[1].Trim();
+        int contentLength = Encoding.UTF8.GetByteCount(agent);
+        string headers = "\r\nContent-Type: text/plain\r\nContent-Length: " + contentLength.ToString() + "\r\n\r\n";
+        responseContent = headers + agent;
     }
 }
 else
@@ -59,6 +59,15 @@ else
 
 string responseString = $"HTTP/1.1 {responseStatus}{responseContent}";
 Byte[] sendBytes = Encoding.ASCII.GetBytes(responseString);
-int i = socket.Send(sendBytes);
+int totalBytesSent = 0;
+while (totalBytesSent < sendBytes.Length)
+{
+    int sent = socket.Send(sendBytes, totalBytesSent, sendBytes.Length - totalBytesSent, SocketFlags.None);
+    if (sent == 0)
+    {
+        break; // Socket has been closed or an error occurred.
+    }
+    totalBytesSent += sent;
+}
 Console.WriteLine("Sent: \n------------\n" + responseString + "\n------------\n");
 
