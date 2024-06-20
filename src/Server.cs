@@ -46,7 +46,7 @@ while (true)
     else if (endpoint[1].ToLower() == "user-agent")
     {
         responseStatus = "200 OK";
-        if (r_arr.Length >= 6)
+        if (r_arr.Length >= 4)
         {
             //Console.WriteLine(r_arr[3]);
             string agent = r_arr[3].Split(':')[1][1..];
