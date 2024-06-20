@@ -9,25 +9,44 @@ using System.Text;
 // Uncomment this block to pass the first stage
 TcpListener server = new TcpListener(IPAddress.Any, 4221);
 server.Start();
+Console.WriteLine($"TCP Server has started");
 while (true)
 {
+    Console.WriteLine("Awaiting requests");
     // wait for client, this is blocking
     Socket socket = server.AcceptSocket();
 
     //Log the connection URL
-    //Console.WriteLine($"Connection Accepted on url {socket.LocalEndPoint} ");
 
     //Receive request from server
     Byte[] recBytes = new Byte[512];
     int r = socket.Receive(recBytes);
     string r_string = new string(Encoding.ASCII.GetChars(recBytes));
-    string endpoint = r_string.Split('\n')[0].Split(' ')[1];
-    Console.WriteLine($"Recived: \n ------------ \n|{endpoint}|\n------------\n");
+    var endpoint = r_string.Split('\n')[0].Split(' ')[1].Split('/');
+    foreach (var item in endpoint)
+    {
+        Console.WriteLine($"|{item}|");
+    }
 
 
-    //Send response back to server
-    string response_verb = (endpoint == "/") ? "200 OK" : "404 Not Found";
-    string responseString = $"HTTP/1.1 {response_verb}\r\n\r\n";
+    //Send response back to servers
+    string responseStatus = "";
+    string responseContent = "\r\n\r\n";
+    if (endpoint[1] == "")
+    {
+        responseStatus = "200 OK";
+    }
+    else if (endpoint[1].ToLower() == "echo")
+    {
+        responseStatus = "200 OK";
+        responseContent = $"\r\nContent-Type: text/plain\r\nContent-Length: {endpoint[2].Length}\r\n\r\n{endpoint[2]}";
+    }
+    else
+    {
+        responseStatus = "404 Not Found";
+    }
+
+    string responseString = $"HTTP/1.1 {responseStatus}{responseContent}";
     Byte[] sendBytes = Encoding.ASCII.GetBytes(responseString);
     int i = socket.Send(sendBytes);
     Console.WriteLine("Sent: \n------------\n" + responseString + "\n------------\n");
