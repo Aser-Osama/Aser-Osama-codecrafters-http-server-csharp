@@ -17,7 +17,7 @@ Socket socket = server.AcceptSocket();
 
 
 //Receive request from server
-Byte[] recBytes = new Byte[1024];
+Byte[] recBytes = new Byte[4096];
 int r = socket.Receive(recBytes);
 string r_string = new string(Encoding.ASCII.GetChars(recBytes));
 var r_arr = r_string.Split('\n');
