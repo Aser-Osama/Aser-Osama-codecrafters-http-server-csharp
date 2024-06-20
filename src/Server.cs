@@ -12,7 +12,7 @@ Socket socket = server.AcceptSocket(); // wait for client, this is blocking
 
 Console.WriteLine("Connection Accepted");
 
-string responseString = "HTTP/1.1 220 OK\r\n\r\n";
+string responseString = "HTTP/1.1 200 OK\r\n\r\n";
 
 //Forms and sends a response string to the connected client.
 Byte[] sendBytes = Encoding.ASCII.GetBytes(responseString);
