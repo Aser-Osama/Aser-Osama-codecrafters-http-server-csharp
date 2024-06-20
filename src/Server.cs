@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
@@ -22,17 +23,6 @@ int r = socket.Receive(recBytes);
 string r_string = new string(Encoding.ASCII.GetChars(recBytes));
 var r_arr = r_string.Split('\n');
 var endpoint = r_arr[0].Split(' ')[1].Split('/');
-Console.WriteLine("Received Headers:");
-foreach (string line in r_arr)
-{
-    Console.WriteLine(line);
-}
-
-// foreach (var item in endpoint)
-// {
-//     Console.Write($"|{item}|");
-// }
-// Console.WriteLine("");
 
 //Send response back to servers
 string responseStatus = "";
@@ -49,13 +39,20 @@ else if (endpoint[1].ToLower() == "echo")
 else if (endpoint[1].ToLower() == "user-agent")
 {
     responseStatus = "200 OK";
-    // Assuming r_arr[3] contains the User-Agent line, you should first check it exists.
-    if (r_arr.Length > 3 && r_arr[3].StartsWith("User-Agent:"))
+    Console.WriteLine("Length = " + r_arr.Length);
+    if (r_arr.Length > 3)
     {
-        string userAgentLine = r_arr[3];
-        string[] parts = userAgentLine.Split(':', 2);  // Split only into two parts: the key and the value.
-        if (parts.Length == 2)
+        string userAgentLine = "";
+        foreach (string line in r_arr)
         {
+            if (line.StartsWith("User-Agent:"))
+            {
+                userAgentLine = line;
+            }
+        }
+        if (!string.IsNullOrEmpty(userAgentLine))
+        {
+            string[] parts = userAgentLine.Split(':');  // Split only into two parts: the key and the value.
             string agent = parts[1].Trim();  // Now safely trimmed.
             int contentLength = Encoding.UTF8.GetByteCount(agent);
             responseContent = $"\r\nContent-Type: text/plain\r\nContent-Length: {contentLength}\r\n\r\n{agent}";
@@ -64,6 +61,7 @@ else if (endpoint[1].ToLower() == "user-agent")
         {
             responseContent = "\r\nContent-Type: text/plain\r\nContent-Length: 0\r\n\r\n";
         }
+
     }
     else
     {
