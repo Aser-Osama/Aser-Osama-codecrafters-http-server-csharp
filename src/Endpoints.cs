@@ -38,9 +38,7 @@ public class Endpoints
 
             if (ReqLine.ToLower().Contains("encoding"))
             {
-                var compAlg = ReqLine.Split(':')[1].Trim();
-                Console.WriteLine(compAlg);
-                if (compAlg == "gzip")
+                if (ReqLine.Contains("gzip"))
                 {
                     encodingType = "\r\nContent-Encoding: gzip";
                     break;
