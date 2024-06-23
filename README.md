@@ -1,38 +1,26 @@
-[![progress-banner](https://backend.codecrafters.io/progress/http-server/d0606fd8-6c17-49d2-b2c6-d75f9aa57764)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# HTTP/1.1 Server
 
-This is a starting point for C# solutions to the
-["Build Your Own HTTP server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
+This repository is an implementation of an HTTP/1.1 web server written in C#. Using TCP protocol, this basic server implementation supports POST and GET methods, can return data compressed using the gzip algorithm, and manages multiple concurrent connections through C#'s multithreading capabilities.
 
-[HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) is the
-protocol that powers the web. In this challenge, you'll build a HTTP/1.1 server
-that is capable of serving multiple clients.
+## Project Setup
 
-Along the way you'll learn about TCP servers,
-[HTTP request syntax](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html),
-and more.
+### Prerequisites
+Ensure you have (.NET 8.0)[https://dotnet.microsoft.com/en-us/download/dotnet/8.0] installed on your system. Verify this by running `dotnet --version` in your command line.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
-
-# Passing the first stage
-
-The entry point for your HTTP server implementation is in `src/Server.cs`. Study
-and uncomment the relevant code, and push your changes to pass the first stage:
+### Building and Running the Project
+Clone the repository and set up your project environment:
 
 ```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
+git clone https://github.com/Aser-Osama/codecrafters-http-server-csharp.git
+cd codecrafters-http-server-csharp
 ```
 
-Time to move on to the next stage!
+Build and execute the project:
+```sh
+./your_server.sh
+```
 
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `dotnet (8.0)` installed locally
-1. Run `./your_server.sh` to run your program, which is implemented in
-   `src/Server.cs`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+To use the `/files` endpoint, specify a directory for storing or retrieving files using the following command:
+```sh
+./your_server.sh  --directory /your/directory/
+```
