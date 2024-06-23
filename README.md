@@ -5,7 +5,7 @@ This repository is an implementation of an HTTP/1.1 web server written in C#. Us
 ## Project Setup
 
 ### Prerequisites
-Ensure you have (.NET 8.0)[https://dotnet.microsoft.com/en-us/download/dotnet/8.0] installed on your system. Verify this by running `dotnet --version` in your command line.
+Ensure you have [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) installed on your system. Verify this by running `dotnet --version` in your command line.
 
 ### Building and Running the Project
 Clone the repository and set up your project environment:
